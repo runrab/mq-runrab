@@ -1,0 +1,27 @@
+server:
+  port: 8085
+spring:
+  kafka:
+    bootstrap-servers: node01:9092,node02:9092,node03:9092
+    consumer:
+      group-id: kafkaGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  redis:
+    cluster:
+      nodes:
+        - node01:7001
+        - node02:7002
+        - node03:7003
+        - node02:7005
+        - node03:7006
+        - node01:7004
+    password:
+    jedis:
+      pool:
+        min-idle: 0
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+# ES配置
