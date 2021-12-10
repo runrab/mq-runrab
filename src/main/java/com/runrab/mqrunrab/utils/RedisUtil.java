@@ -548,13 +548,11 @@ public class RedisUtil {
 
     /**
      * 根据索引修改list中的某条数据
-     *
      * @param key   键
      * @param index 索引
      * @param value 值
      * @return
      */
-
     public static boolean lUpdateIndex(String key, long index, Object value) {
         try {
             redisTemplate.opsForList().set(key, index, value);
@@ -564,7 +562,6 @@ public class RedisUtil {
             return false;
         }
     }
-
 
     /**
      * 移除N个值为value

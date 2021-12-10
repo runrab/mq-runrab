@@ -361,7 +361,6 @@ public class RedisTools {
         ListOperations<String, Object> list = redisTemplate.opsForList();
         list.rightPush(k, v);
     }
-
     /**
      * 列表获取
      * @param k
@@ -405,7 +404,6 @@ public class RedisTools {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         zset.add(key, value, scoure);
     }
-
     /**
      * 有序集合获取
      * @param key
@@ -418,7 +416,6 @@ public class RedisTools {
         redisTemplate.opsForValue();
         return zset.rangeByScore(key, scoure, scoure1);
     }
-
 
     //第一次加载的时候将数据加载到redis中
     public static void saveDataToRedis(String name) {
@@ -445,8 +442,6 @@ public class RedisTools {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         return zset.rank(key,value);
     }
-
-
     /**
      * 有序集合获取排名
      * @param key
@@ -466,8 +461,6 @@ public class RedisTools {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         return zset.score(key,value);
     }
-
-
     /**
      * 有序集合添加分数
      * @param key
@@ -478,8 +471,6 @@ public class RedisTools {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         zset.incrementScore(key, value, scoure);
     }
-
-
     /**
      * 有序集合获取排名
      * @param key
@@ -489,7 +480,6 @@ public class RedisTools {
         Set<ZSetOperations.TypedTuple<Object>> ret = zset.reverseRangeByScoreWithScores(key,start,end);
         return ret;
     }
-
     /**
      * 有序集合获取排名
      * @param key
