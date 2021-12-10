@@ -1,28 +1,29 @@
 package com.runrab.mqrunrab.utils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
 @Component
 public class RedisTools {
     private static RedisTemplate redisTemplate;
-    @Autowired
-    public void setRedisTemplate(RedisTemplate redisTemplate) {
-        RedisTools.redisTemplate = redisTemplate;
-    }
-    private static double size = Math.pow(2, 32);
+    private static final double size = Math.pow(2, 32);
+
     /**
      * 写入缓存
+     *
      * @param key
      * @param offset 位 8Bit=1Byte
      * @return
      */
-    public static  boolean setBit(String key, long offset, boolean isShow) {
+    public static boolean setBit(String key, long offset, boolean isShow) {
         boolean result = false;
         try {
             ValueOperations<String, Object> operations = redisTemplate.opsForValue();
@@ -51,7 +52,7 @@ public class RedisTools {
         }
         return result;
     }
-    // ===============================通用=================================
+
     /**
      * 删除缓存
      *
@@ -63,10 +64,12 @@ public class RedisTools {
             if (key.length == 1) {
                 redisTemplate.delete(key[0]);
             } else {
-                redisTemplate.delete((Collection<String>) CollectionUtils.arrayToList(key));
+                redisTemplate.delete(CollectionUtils.arrayToList(key));
             }
         }
     }
+    // ===============================通用=================================
+
     /**
      * 指定缓存失效时间
      *
@@ -84,16 +87,20 @@ public class RedisTools {
             return false;
         }
     }
+
     /**
      * 根据key 获取过期时间
+     *
      * @param key 键 不能为null
      * @return 时间(秒) 返回0代表为永久有效
      */
     public static long getExpire(String key) {
         return redisTemplate.getExpire(key, TimeUnit.SECONDS);
     }
+
     /**
      * 判断key是否存在
+     *
      * @param key 键
      * @return true 存在 false不存在
      */
@@ -105,7 +112,7 @@ public class RedisTools {
             return false;
         }
     }
-    // ===============================String=================================
+
     /**
      * 写入缓存
      *
@@ -124,8 +131,11 @@ public class RedisTools {
         }
         return result;
     }
+    // ===============================String=================================
+
     /**
      * 写入缓存设置时效时间
+     *
      * @param key
      * @param value
      * @return
@@ -142,6 +152,7 @@ public class RedisTools {
         }
         return result;
     }
+
     /**
      * 批量删除对应的value
      *
@@ -152,8 +163,10 @@ public class RedisTools {
             remove(key);
         }
     }
+
     /**
      * 删除对应的value
+     *
      * @param key
      */
     public static void remove(final String key) {
@@ -161,6 +174,7 @@ public class RedisTools {
             redisTemplate.delete(key);
         }
     }
+
     /**
      * 判断缓存中是否有对应的value
      *
@@ -170,6 +184,7 @@ public class RedisTools {
     public static boolean exists(final String key) {
         return redisTemplate.hasKey(key);
     }
+
     /**
      * 读取缓存
      *
@@ -182,8 +197,10 @@ public class RedisTools {
         result = operations.get(key);
         return result;
     }
+
     /**
      * 递增
+     *
      * @param key   键
      * @param delta 要增加几(大于0)
      */
@@ -193,8 +210,10 @@ public class RedisTools {
         }
         return redisTemplate.opsForValue().increment(key, delta);
     }
+
     /**
      * 递减
+     *
      * @param key   键
      * @param delta 要减少几(小于0)
      */
@@ -204,7 +223,7 @@ public class RedisTools {
         }
         return redisTemplate.opsForValue().increment(key, -delta);
     }
-    // ===============================Hash=================================
+
     /**
      * HashGet
      *
@@ -214,6 +233,7 @@ public class RedisTools {
     public static Object hget(String key, String item) {
         return redisTemplate.opsForHash().get(key, item);
     }
+    // ===============================Hash=================================
 
     /**
      * 获取hashKey对应的所有键值
@@ -240,6 +260,7 @@ public class RedisTools {
             return false;
         }
     }
+
     /**
      * HashSet 并设置时间
      *
@@ -260,7 +281,6 @@ public class RedisTools {
             return false;
         }
     }
-
 
     /**
      * 向一张hash表中放入数据,如果不存在将创建
@@ -301,14 +321,17 @@ public class RedisTools {
             return false;
         }
     }
+
     /**
      * 删除hash表中的值
+     *
      * @param key  键 不能为null
      * @param item 项 可以使多个 不能为null
      */
     public static void hdel(String key, Object... item) {
         redisTemplate.opsForHash().delete(key, item);
     }
+
     /**
      * 判断hash表中是否有该项的值
      *
@@ -319,7 +342,6 @@ public class RedisTools {
     public static boolean hHasKey(String key, String item) {
         return redisTemplate.opsForHash().hasKey(key, item);
     }
-
 
     /**
      * hash递增 如果不存在,就会创建一个 并把新增后的值返回
@@ -332,9 +354,9 @@ public class RedisTools {
         return redisTemplate.opsForHash().increment(key, item, by);
     }
 
-
     /**
      * hash递减
+     *
      * @param key  键
      * @param item 项
      * @param by   要减少记(小于0)
@@ -342,18 +364,19 @@ public class RedisTools {
     public static double hdecr(String key, String item, double by) {
         return redisTemplate.opsForHash().increment(key, item, -by);
     }
+
     /**
      * 获取hash中key的数量
-     * @param key  键 不能为null
+     *
+     * @param key 键 不能为null
      */
     public static int hSize(String key) {
         return redisTemplate.opsForHash().keys(key).size();
     }
 
-    // ===============================List=================================
-
     /**
      * 列表添加
+     *
      * @param k
      * @param v
      */
@@ -361,8 +384,12 @@ public class RedisTools {
         ListOperations<String, Object> list = redisTemplate.opsForList();
         list.rightPush(k, v);
     }
+
+    // ===============================List=================================
+
     /**
      * 列表获取
+     *
      * @param k
      * @param l
      * @param l1
@@ -372,7 +399,7 @@ public class RedisTools {
         ListOperations<String, Object> list = redisTemplate.opsForList();
         return list.range(k, l, l1);
     }
-    // ===============================Collection=================================
+
     /**
      * 集合添加
      *
@@ -383,9 +410,11 @@ public class RedisTools {
         SetOperations<String, Object> set = redisTemplate.opsForSet();
         set.add(key, value);
     }
+    // ===============================Collection=================================
 
     /**
      * 集合获取
+     *
      * @param key
      * @return
      */
@@ -395,17 +424,8 @@ public class RedisTools {
     }
 
     /**
-     * 有序集合添加
-     * @param key
-     * @param value
-     * @param scoure
-     */
-    public void zAdd(String key, Object value, double scoure) {
-        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
-        zset.add(key, value, scoure);
-    }
-    /**
      * 有序集合获取
+     *
      * @param key
      * @param scoure
      * @param scoure1
@@ -432,37 +452,44 @@ public class RedisTools {
         return getBit("availableUsers", indexLong);
     }
 
-    // ===============================Z-Collection=================================
     /**
      * 有序集合获取排名
-     * @param key 集合名称
+     *
+     * @param key   集合名称
      * @param value 值
      */
     public static Long zRank(String key, Object value) {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
-        return zset.rank(key,value);
-    }
-    /**
-     * 有序集合获取排名
-     * @param key
-     */
-    public static Set<ZSetOperations.TypedTuple<Object>> zRankWithScore(String key, long start,long end) {
-        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
-        Set<ZSetOperations.TypedTuple<Object>> ret = zset.rangeWithScores(key,start,end);
-        return ret;
+        return zset.rank(key, value);
     }
 
     /**
+     * 有序集合获取排名
+     *
+     * @param key
+     */
+    public static Set<ZSetOperations.TypedTuple<Object>> zRankWithScore(String key, long start, long end) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        Set<ZSetOperations.TypedTuple<Object>> ret = zset.rangeWithScores(key, start, end);
+        return ret;
+    }
+
+    // ===============================Z-Collection=================================
+
+    /**
      * 有序集合添加
+     *
      * @param key
      * @param value
      */
     public static Double zSetScore(String key, Object value) {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
-        return zset.score(key,value);
+        return zset.score(key, value);
     }
+
     /**
      * 有序集合添加分数
+     *
      * @param key
      * @param value
      * @param scoure
@@ -471,23 +498,44 @@ public class RedisTools {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         zset.incrementScore(key, value, scoure);
     }
+
     /**
      * 有序集合获取排名
+     *
      * @param key
      */
-    public static Set<ZSetOperations.TypedTuple<Object>> reverseZRankWithScore(String key, long start,long end) {
+    public static Set<ZSetOperations.TypedTuple<Object>> reverseZRankWithScore(String key, long start, long end) {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
-        Set<ZSetOperations.TypedTuple<Object>> ret = zset.reverseRangeByScoreWithScores(key,start,end);
+        Set<ZSetOperations.TypedTuple<Object>> ret = zset.reverseRangeByScoreWithScores(key, start, end);
         return ret;
     }
+
     /**
      * 有序集合获取排名
+     *
      * @param key
      */
     public static Set<ZSetOperations.TypedTuple<Object>> reverseZRankWithRank(String key, long start, long end) {
         ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
         Set<ZSetOperations.TypedTuple<Object>> ret = zset.reverseRangeWithScores(key, start, end);
         return ret;
+    }
+
+    @Autowired
+    public void setRedisTemplate(RedisTemplate redisTemplate) {
+        RedisTools.redisTemplate = redisTemplate;
+    }
+
+    /**
+     * 有序集合添加
+     *
+     * @param key
+     * @param value
+     * @param scoure
+     */
+    public void zAdd(String key, Object value, double scoure) {
+        ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+        zset.add(key, value, scoure);
     }
 
 }
